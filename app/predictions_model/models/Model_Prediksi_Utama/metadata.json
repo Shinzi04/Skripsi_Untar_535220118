@@ -1,0 +1,1 @@
+{"time_step": 7, "features": ["PM10", "SO2", "CO", "O3", "NO2", "Temperatur", "Kelembapan", "Curah Hujan", "Penyinaran Matahari", "Kecepatan Angin"], "targets": ["PM10", "SO2", "CO", "O3", "NO2"]}

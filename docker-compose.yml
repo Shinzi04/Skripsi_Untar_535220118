@@ -1,0 +1,88 @@
+services:
+  nessie:
+    image: projectnessie/nessie:0.76.6
+    container_name: nessie
+    ports:
+      - "19120:19120"
+    environment:
+      - NESSIE_VERSION_STORE_TYPE=ROCKSDB
+      - NESSIE_VERSION_STORE_PERSIST_ROCKS_DATABASE_PATH=/nessie/data
+      - QUARKUS_HTTP_PORT=19120
+    volumes:
+      - ./nessie-data:/nessie/data
+    networks:
+      intro-network:
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=admin1234
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    volumes:
+      - ./minio-data:/minio-data
+    entrypoint: >
+      /bin/sh -c "
+      minio server /data --console-address ':9001' &
+      sleep 5;
+      mc alias set myminio http://localhost:9000 admin admin1234;
+      mc mb myminio/datalake;
+      mc mb myminio/datalakehouse;
+      mc cp --recursive /minio-data/ myminio/datalake/;
+      tail -f /dev/null"
+    networks:
+      intro-network:
+
+  dremio:
+    platform: linux/x86_64
+    image: dremio/dremio-oss:latest
+    ports:
+      - 9047:9047
+      - 31010:31010
+      - 32010:32010
+      - 45678:45678
+    container_name: dremio
+    environment:
+      - DREMIO_JAVA_SERVER_EXTRA_OPTS=-Dpaths.dist=file:///opt/dremio/data/dist
+    networks:
+      intro-network:
+
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - minio
+      - nessie
+      - dremio
+    env_file:
+      - ./app/.env.docker
+    networks:
+      intro-network:
+
+  frontend:
+    build:
+      context: ./front-end
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_BASE_URL=http://localhost:8080
+    depends_on:
+      - app
+    networks:
+      intro-network:
+
+networks:
+  intro-network:
