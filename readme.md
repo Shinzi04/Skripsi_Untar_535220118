@@ -43,31 +43,31 @@ Project ini bertujuan untuk mengintegrasikan model BI-LSTM dan Arsitektur Data L
 
 1. Clone repository dari GitHub: [Integrasi Datalakehouse dan Model BI-LSTM](https://github.com/Shinzi04/Skripsi_Untar_535220118.git).
 
-- `git clone https://github.com/Shinzi04/Skripsi_Untar_535220118.git`
+`git clone https://github.com/Shinzi04/Skripsi_Untar_535220118.git`
 
 2. Buat file `.env` pada direktori `/app`, format .env dapat dilihat pada `.env.example`
 
-- ```env
-  MINIO_ENDPOINT = "localhost:9000"
-  MINIO_ACCESS_KEY = "admin"
-  MINIO_SECRET_KEY = "admin1234"
-  MINIO_DATALAKE_BUCKET = "datalake"
+```env
+MINIO_ENDPOINT = "localhost:9000"
+MINIO_ACCESS_KEY = "admin"
+MINIO_SECRET_KEY = "admin1234"
+MINIO_DATALAKE_BUCKET = "datalake"
 
-  DREMIO_ENDPOINT = "grpc+tcp://localhost:32010"
-  DREMIO_USERNAME = "admin"
-  DREMIO_PASSWORD = "admin1234"
+DREMIO_ENDPOINT = "grpc+tcp://localhost:32010"
+DREMIO_USERNAME = "admin"
+DREMIO_PASSWORD = "admin1234"
 
-  # ISI DI BAWAH INI
-  ADMIN_USER= # Username akses fitur admin pada website
-  ADMIN_PASSWORD= # Password akses fitur admin pada website
-  JWT_SECRET= # Kunci rahasia
-  JWT_EXPIRES_MIN= # Berapa menit lama token aktif
-  ```
+# ISI DI BAWAH INI
+ADMIN_USER= # Username akses fitur admin pada website
+ADMIN_PASSWORD= # Password akses fitur admin pada website
+JWT_SECRET= # Kunci rahasia
+JWT_EXPIRES_MIN= # Berapa menit lama token aktif
+```
 
 3. Jalankan Docker.
 4. Jalankan Docker Compose.
 
-- `docker-compose up -d`
+`docker-compose up -d`
 
 5. Setelah semua _container_ aktif, pertama akses Dremio melalui [localhost:9047](http://localhost:9047) dan buat akun Dremio dan login dengan akun tersebut.
 6. Selanjutnya koneksikan unit penyimpanan yaitu MinIO dengan menggunakan fitur `Add Data Source`. Berikut merupakan kredensial MinIO pada Dremio:
